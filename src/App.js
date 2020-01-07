@@ -1,24 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect, useState} from 'react';
+import axios from "axios";
 import './App.css';
+import Movement from './components/Movement';
+import {token} from "./util/token"
 
 function App() {
+  const [init, setInit] = useState()
+  useEffect(() => {
+    axios.get("https://lambda-treasure-hunt.herokuapp.com/api/adv/init/", {
+      headers: {
+        Authorization: token
+      }
+    }).then(res => {
+      console.log(res.data)
+      setInit({
+        room_id_0: res.data
+      })
+
+    }).catch(err => {
+      console.log(err.response)
+    })
+  }, [])
+  console.log("state", init)
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Movement map={init}/>
     </div>
   );
 }
